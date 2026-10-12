@@ -1,0 +1,70 @@
+name: Pace
+options:
+  bundleIdPrefix: com.ericomg
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    DEVELOPMENT_TEAM: 4535Q45QTY
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: Apple Development
+    MARKETING_VERSION: 1.0.0
+    CURRENT_PROJECT_VERSION: 1
+    SWIFT_VERSION: "5.0"
+    ENABLE_HARDENED_RUNTIME: YES
+    APP_GROUP: $(TeamIdentifierPrefix)com.ericomg.pace
+
+targets:
+  Pace:
+    type: application
+    platform: macOS
+    sources:
+      - Pace
+      - Shared
+    info:
+      path: Pace/Info.plist
+      properties:
+        CFBundleDisplayName: Pace
+        LSUIElement: true
+        LSApplicationCategoryType: public.app-category.developer-tools
+        PaceAppGroup: $(APP_GROUP)
+        CFBundleURLTypes:
+          - CFBundleURLName: com.ericomg.pace
+            CFBundleURLSchemes: [pace]
+    entitlements:
+      path: Pace/Pace.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - $(APP_GROUP)
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.ericomg.pace
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    dependencies:
+      - target: PaceWidget
+        embed: true
+
+  PaceWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - PaceWidget
+      - Shared
+    info:
+      path: PaceWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Pace
+        PaceAppGroup: $(APP_GROUP)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: PaceWidget/PaceWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.application-groups:
+          - $(APP_GROUP)
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.ericomg.pace.widget
+      SKIP_INSTALL: YES

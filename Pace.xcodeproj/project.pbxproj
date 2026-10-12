@@ -1,0 +1,500 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		034B566EE8F77DB923E0E8B2 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE90CAA1B4F805B21BA32767 /* App.swift */; };
+		108ED9649E5BD03B37494184 /* WidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B31302299227BBC94426C01 /* WidgetViews.swift */; };
+		477D511209189702EB91048B /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBB0AF9601371A22C200A85 /* Views.swift */; };
+		657EFA4DA5BADC63E9B27440 /* PaceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D246CF7CBDB236F40AE7B5 /* PaceWidget.swift */; };
+		6AEA44441D3BDA94DB863E5A /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBB0AF9601371A22C200A85 /* Views.swift */; };
+		702B1068DE2DD40B90A59E76 /* Fetchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F0980211D11382FCD87DEE /* Fetchers.swift */; };
+		784A831B6144E768AA260A61 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B639239B3DD845DE406D75 /* Models.swift */; };
+		87FAEF65FD294973C0471BDC /* SnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F40FD128F2E463FB73342D /* SnapshotStore.swift */; };
+		97027B9BCD5FEACFC2498AC7 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF19B9A5EC8BC7EF8A698C4E /* Renderer.swift */; };
+		A038F95E57668EAB9D321BBC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F84E0AEF893C03527415DC43 /* Assets.xcassets */; };
+		A7A3C6D61C21D36BC552710D /* WidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B31302299227BBC94426C01 /* WidgetViews.swift */; };
+		A82CCAEC007DBBBA24C34937 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCBD1E9A2C1F00226CF7D6F4 /* Assets.xcassets */; };
+		BBA09EB26BB61F7058D3FFA3 /* UsageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8A25FB1DF847B6E44B1B70 /* UsageStore.swift */; };
+		C909424EB503A15ED8BC1213 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B639239B3DD845DE406D75 /* Models.swift */; };
+		CF6AFCA0ADC1DEF23EA677A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F84E0AEF893C03527415DC43 /* Assets.xcassets */; };
+		EFF654568DB0AA4752DBC5A1 /* PaceWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 125B9D66D824F78A739E022B /* PaceWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FF4B48B436F83017BBCFCF09 /* SnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F40FD128F2E463FB73342D /* SnapshotStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B554DC331A474B5849364C5E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 95663F7CF1D72FE327AF8CDB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E3425249A21E037C1CC2777F;
+			remoteInfo = PaceWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9AC17CA597DAEA1CFF97B937 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EFF654568DB0AA4752DBC5A1 /* PaceWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		125B9D66D824F78A739E022B /* PaceWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PaceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		46ED58A28B9B277C0CBBF5A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4B8A25FB1DF847B6E44B1B70 /* UsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStore.swift; sourceTree = "<group>"; };
+		5DE567E98F1DF8166693AFA7 /* Pace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		68F40FD128F2E463FB73342D /* SnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotStore.swift; sourceTree = "<group>"; };
+		78B639239B3DD845DE406D75 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		8B31302299227BBC94426C01 /* WidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetViews.swift; sourceTree = "<group>"; };
+		92695C20E99FB21E3B34DB5F /* Pace.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pace.entitlements; sourceTree = "<group>"; };
+		950EE826F0CCD319B208B827 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BCBD1E9A2C1F00226CF7D6F4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C8F0980211D11382FCD87DEE /* Fetchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetchers.swift; sourceTree = "<group>"; };
+		CB8809C9DA858EA015243677 /* PaceWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PaceWidget.entitlements; sourceTree = "<group>"; };
+		CE90CAA1B4F805B21BA32767 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		DDBB0AF9601371A22C200A85 /* Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
+		DF19B9A5EC8BC7EF8A698C4E /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		E8D246CF7CBDB236F40AE7B5 /* PaceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaceWidget.swift; sourceTree = "<group>"; };
+		F84E0AEF893C03527415DC43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		33EFF8148179758EB18570E1 = {
+			isa = PBXGroup;
+			children = (
+				E7E838367486EB1A00672B21 /* Pace */,
+				B062E1FF5D499FC9895350D8 /* PaceWidget */,
+				555F3EABD34BD49E5765D4E0 /* Shared */,
+				A158A0A14AD2BA134AD4747D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		555F3EABD34BD49E5765D4E0 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				F84E0AEF893C03527415DC43 /* Assets.xcassets */,
+				78B639239B3DD845DE406D75 /* Models.swift */,
+				68F40FD128F2E463FB73342D /* SnapshotStore.swift */,
+				DDBB0AF9601371A22C200A85 /* Views.swift */,
+				8B31302299227BBC94426C01 /* WidgetViews.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A158A0A14AD2BA134AD4747D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5DE567E98F1DF8166693AFA7 /* Pace.app */,
+				125B9D66D824F78A739E022B /* PaceWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B062E1FF5D499FC9895350D8 /* PaceWidget */ = {
+			isa = PBXGroup;
+			children = (
+				950EE826F0CCD319B208B827 /* Info.plist */,
+				CB8809C9DA858EA015243677 /* PaceWidget.entitlements */,
+				E8D246CF7CBDB236F40AE7B5 /* PaceWidget.swift */,
+			);
+			path = PaceWidget;
+			sourceTree = "<group>";
+		};
+		E7E838367486EB1A00672B21 /* Pace */ = {
+			isa = PBXGroup;
+			children = (
+				CE90CAA1B4F805B21BA32767 /* App.swift */,
+				BCBD1E9A2C1F00226CF7D6F4 /* Assets.xcassets */,
+				C8F0980211D11382FCD87DEE /* Fetchers.swift */,
+				46ED58A28B9B277C0CBBF5A2 /* Info.plist */,
+				92695C20E99FB21E3B34DB5F /* Pace.entitlements */,
+				DF19B9A5EC8BC7EF8A698C4E /* Renderer.swift */,
+				4B8A25FB1DF847B6E44B1B70 /* UsageStore.swift */,
+			);
+			path = Pace;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		70FC5A2B99F070D28F4F4C7C /* Pace */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29824135C16519359B7868C1 /* Build configuration list for PBXNativeTarget "Pace" */;
+			buildPhases = (
+				1844E1FD6F07764D6A6EF33B /* Sources */,
+				8FC5ACDD3732EBD5AE2E4A74 /* Resources */,
+				9AC17CA597DAEA1CFF97B937 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B0C00A88751131B70F2839D6 /* PBXTargetDependency */,
+			);
+			name = Pace;
+			packageProductDependencies = (
+			);
+			productName = Pace;
+			productReference = 5DE567E98F1DF8166693AFA7 /* Pace.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E3425249A21E037C1CC2777F /* PaceWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD0E88025F65310B81247BA0 /* Build configuration list for PBXNativeTarget "PaceWidget" */;
+			buildPhases = (
+				1BAA73D8C02666D6ECA774A1 /* Sources */,
+				D948CE6381D999D2C5EB9586 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PaceWidget;
+			packageProductDependencies = (
+			);
+			productName = PaceWidget;
+			productReference = 125B9D66D824F78A739E022B /* PaceWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		95663F7CF1D72FE327AF8CDB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					70FC5A2B99F070D28F4F4C7C = {
+						DevelopmentTeam = 4535Q45QTY;
+						ProvisioningStyle = Manual;
+					};
+					E3425249A21E037C1CC2777F = {
+						DevelopmentTeam = 4535Q45QTY;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 0C2389853BE0BC4E7ADEA200 /* Build configuration list for PBXProject "Pace" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 33EFF8148179758EB18570E1;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A158A0A14AD2BA134AD4747D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				70FC5A2B99F070D28F4F4C7C /* Pace */,
+				E3425249A21E037C1CC2777F /* PaceWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8FC5ACDD3732EBD5AE2E4A74 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A82CCAEC007DBBBA24C34937 /* Assets.xcassets in Resources */,
+				A038F95E57668EAB9D321BBC /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D948CE6381D999D2C5EB9586 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF6AFCA0ADC1DEF23EA677A9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1844E1FD6F07764D6A6EF33B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				034B566EE8F77DB923E0E8B2 /* App.swift in Sources */,
+				702B1068DE2DD40B90A59E76 /* Fetchers.swift in Sources */,
+				C909424EB503A15ED8BC1213 /* Models.swift in Sources */,
+				97027B9BCD5FEACFC2498AC7 /* Renderer.swift in Sources */,
+				FF4B48B436F83017BBCFCF09 /* SnapshotStore.swift in Sources */,
+				BBA09EB26BB61F7058D3FFA3 /* UsageStore.swift in Sources */,
+				477D511209189702EB91048B /* Views.swift in Sources */,
+				A7A3C6D61C21D36BC552710D /* WidgetViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1BAA73D8C02666D6ECA774A1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				784A831B6144E768AA260A61 /* Models.swift in Sources */,
+				657EFA4DA5BADC63E9B27440 /* PaceWidget.swift in Sources */,
+				87FAEF65FD294973C0471BDC /* SnapshotStore.swift in Sources */,
+				6AEA44441D3BDA94DB863E5A /* Views.swift in Sources */,
+				108ED9649E5BD03B37494184 /* WidgetViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B0C00A88751131B70F2839D6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E3425249A21E037C1CC2777F /* PaceWidget */;
+			targetProxy = B554DC331A474B5849364C5E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0295CE71C58A0D11757F0A0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_GROUP = "$(TeamIdentifierPrefix)com.ericomg.pace";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4535Q45QTY;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		05D80D237B9558CEAA23221E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PaceWidget/PaceWidget.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PaceWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ericomg.pace.widget;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		30EB5B2ED4F35E1966EA2437 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Pace/Pace.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Pace/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ericomg.pace;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		4849D92F7248E0224DDB5943 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APP_GROUP = "$(TeamIdentifierPrefix)com.ericomg.pace";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4535Q45QTY;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CD40A01F90ED4A69CE72AC38 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Pace/Pace.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Pace/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ericomg.pace;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E1FBE975F6AB21A0FCD32D62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PaceWidget/PaceWidget.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PaceWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ericomg.pace.widget;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0C2389853BE0BC4E7ADEA200 /* Build configuration list for PBXProject "Pace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4849D92F7248E0224DDB5943 /* Debug */,
+				0295CE71C58A0D11757F0A0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		29824135C16519359B7868C1 /* Build configuration list for PBXNativeTarget "Pace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30EB5B2ED4F35E1966EA2437 /* Debug */,
+				CD40A01F90ED4A69CE72AC38 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DD0E88025F65310B81247BA0 /* Build configuration list for PBXNativeTarget "PaceWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				05D80D237B9558CEAA23221E /* Debug */,
+				E1FBE975F6AB21A0FCD32D62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 95663F7CF1D72FE327AF8CDB /* Project object */;
+}
