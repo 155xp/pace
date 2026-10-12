@@ -47,22 +47,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @MainActor
-final class StatusItemController: NSObject {
+final class StatusItemController: NSObject, NSPopoverDelegate {
     private let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let popover = NSPopover()
     private let store: UsageStore
     private var subscription: AnyCancellable?
     private var appearanceObservation: NSKeyValueObservation?
     private var ticker: Timer?
+    /// What the label currently shows. Setting the button's image posts an
+    /// appearance change, so redrawing on every notification would loop forever.
+    private var labelKey = ""
 
     init(store: UsageStore) {
         self.store = store
         super.init()
 
-        let hosting = NSHostingController(rootView: PopoverView(store: store))
-        hosting.sizingOptions = .preferredContentSize
-        popover.contentViewController = hosting
         popover.behavior = .transient
+        popover.delegate = self
 
         if let button = item.button {
             button.target = self
@@ -74,10 +75,13 @@ final class StatusItemController: NSObject {
             }
         }
         subscription = store.$snapshot.receive(on: RunLoop.main).sink { [weak self] _ in self?.updateLabel() }
-        // Pace and rollovers depend on the clock, not just on new data.
-        ticker = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
-            Task { @MainActor in self?.updateLabel() }
+        // Rollovers and pace depend on the clock, not just on new data.
+        let ticker = Timer(timeInterval: 60, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.updateLabel() }
         }
+        ticker.tolerance = 20
+        RunLoop.main.add(ticker, forMode: .common)
+        self.ticker = ticker
     }
 
     @objc private func clicked() {
@@ -92,9 +96,17 @@ final class StatusItemController: NSObject {
 
     func showPopover() {
         guard let button = item.button, !popover.isShown else { return }
-        store.refresh(ifOlderThan: 30)
+        store.refresh(ifOlderThan: 60)
+        // The SwiftUI view only exists while the popover is open.
+        let hosting = NSHostingController(rootView: PopoverView(store: store))
+        hosting.sizingOptions = .preferredContentSize
+        popover.contentViewController = hosting
         NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+    }
+
+    func popoverDidClose(_ notification: Notification) {
+        popover.contentViewController = nil
     }
 
     private func showMenu() {
@@ -122,7 +134,7 @@ final class StatusItemController: NSObject {
     }
 
     @objc private func refresh() {
-        Task { await store.refresh() }
+        store.refreshAll()
     }
 
     @objc private func toggleProvider(_ sender: NSMenuItem) {
@@ -142,17 +154,31 @@ final class StatusItemController: NSObject {
         guard let button = item.button else { return }
         let snapshot = store.snapshot
         guard !snapshot.providers.isEmpty else {
+            guard labelKey != "empty" else { return }
+            labelKey = "empty"
             button.image = NSImage(systemSymbolName: "gauge.with.dots.needle.33percent", accessibilityDescription: "Pace")
             return
         }
         let now = Date()
+        let shown = snapshot.providers.map { ($0, $0.tightest(at: now)) }
         // Template images follow the menu bar's look. Color is only used when
         // something is off pace, so it has to pick its own ink.
-        let warning = snapshot.providers.contains { usage in
-            guard let pace = usage.tightest(at: now)?.pace(at: now) else { return false }
+        let warning = shown.contains { _, window in
+            guard let pace = window?.pace(at: now) else { return false }
             return pace != .onTrack
         }
         let dark = button.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        let key = shown.map { usage, window -> String in
+            let pace: String
+            switch window?.pace(at: now) {
+            case .runsOut: pace = "o"
+            case .limited: pace = "x"
+            default: pace = ""
+            }
+            return usage.provider.rawValue + (window.map { Format.percent($0.usedPercent) } ?? "-") + pace
+        }.joined(separator: " ") + (warning ? (dark ? " dark" : " light") : "")
+        guard key != labelKey else { return }
+        labelKey = key
         let label = MenuBarLabel(snapshot: snapshot, date: now, colored: warning, ink: warning && dark ? .white : .black)
             .environment(\.colorScheme, dark ? .dark : .light)
         guard let image = Renderer.image(label) else { return }

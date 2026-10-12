@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		034B566EE8F77DB923E0E8B2 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE90CAA1B4F805B21BA32767 /* App.swift */; };
 		108ED9649E5BD03B37494184 /* WidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B31302299227BBC94426C01 /* WidgetViews.swift */; };
+		183A5CEAD4B24B1FD743559E /* ActivityWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A58EAA8392EBA8A959E5F76 /* ActivityWatcher.swift */; };
 		477D511209189702EB91048B /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBB0AF9601371A22C200A85 /* Views.swift */; };
 		657EFA4DA5BADC63E9B27440 /* PaceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D246CF7CBDB236F40AE7B5 /* PaceWidget.swift */; };
 		6AEA44441D3BDA94DB863E5A /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBB0AF9601371A22C200A85 /* Views.swift */; };
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		125B9D66D824F78A739E022B /* PaceWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PaceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A58EAA8392EBA8A959E5F76 /* ActivityWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityWatcher.swift; sourceTree = "<group>"; };
 		46ED58A28B9B277C0CBBF5A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4B8A25FB1DF847B6E44B1B70 /* UsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStore.swift; sourceTree = "<group>"; };
 		5DE567E98F1DF8166693AFA7 /* Pace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pace.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +117,7 @@
 		E7E838367486EB1A00672B21 /* Pace */ = {
 			isa = PBXGroup;
 			children = (
+				2A58EAA8392EBA8A959E5F76 /* ActivityWatcher.swift */,
 				CE90CAA1B4F805B21BA32767 /* App.swift */,
 				BCBD1E9A2C1F00226CF7D6F4 /* Assets.xcassets */,
 				C8F0980211D11382FCD87DEE /* Fetchers.swift */,
@@ -231,6 +234,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				183A5CEAD4B24B1FD743559E /* ActivityWatcher.swift in Sources */,
 				034B566EE8F77DB923E0E8B2 /* App.swift in Sources */,
 				702B1068DE2DD40B90A59E76 /* Fetchers.swift in Sources */,
 				C909424EB503A15ED8BC1213 /* Models.swift in Sources */,

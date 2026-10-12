@@ -1,4 +1,5 @@
 import Foundation
+import os
 import SQLite3
 
 enum FetchError: LocalizedError {
@@ -6,6 +7,8 @@ enum FetchError: LocalizedError {
     case notConfigured
     case signedOut(String)
     case http(Int)
+    /// HTTP 429, with the server's Retry-After in seconds when it sent one.
+    case rateLimited(TimeInterval?)
     case unreadable
 
     var errorDescription: String? {
@@ -13,6 +16,7 @@ enum FetchError: LocalizedError {
         case .notConfigured: "Not set up on this Mac."
         case .signedOut(let hint): hint
         case .http(let code): "Couldn't refresh (HTTP \(code))."
+        case .rateLimited: "Rate limited. Trying again later."
         case .unreadable: "Couldn't read the usage response."
         }
     }
@@ -31,6 +35,13 @@ protocol UsageFetcher: Sendable {
     func fetch() async throws -> Fetched
 }
 
+/// A value kept between refreshes, which run off the main actor.
+private final class Cached<Value: Sendable>: Sendable {
+    private let lock = OSAllocatedUnfairLock<Value?>(initialState: nil)
+    var value: Value? { lock.withLock { $0 } }
+    func set(_ value: Value?) { lock.withLock { $0 = value } }
+}
+
 private let home = FileManager.default.homeDirectoryForCurrentUser
 private let hour: TimeInterval = 3600
 private let week: TimeInterval = 7 * 24 * hour
@@ -41,7 +52,11 @@ private func getJSON(_ url: URL, headers: [String: String]) async throws -> [Str
     request.setValue("Pace/1.0", forHTTPHeaderField: "User-Agent")
     for (key, value) in headers { request.setValue(value, forHTTPHeaderField: key) }
     let (data, response) = try await URLSession.shared.data(for: request)
-    let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+    let http = response as? HTTPURLResponse
+    let status = http?.statusCode ?? 0
+    if status == 429 {
+        throw FetchError.rateLimited((http?.value(forHTTPHeaderField: "Retry-After")).flatMap(TimeInterval.init))
+    }
     guard status == 200 else { throw FetchError.http(status) }
     guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw FetchError.unreadable }
     return json
@@ -88,20 +103,44 @@ private func windowLabel(_ seconds: TimeInterval) -> String {
 struct ClaudeFetcher: UsageFetcher {
     let provider = Provider.claude
 
+    /// Reading the keychain launches a process, so the token is kept until it
+    /// expires or the server stops accepting it.
+    private static let token = Cached<(value: String, expires: Date?)>()
+
     func fetch() async throws -> Fetched {
+        for attempt in 0..<2 {
+            let token = try currentToken(reread: attempt > 0)
+            do {
+                // `cedar_ember=1` adds the usage-limit reset grants, which the server only
+                // reports to Claude Code's CLI, so this request uses its user agent.
+                let json = try await getJSON(URL(string: "https://api.anthropic.com/api/oauth/usage?cedar_ember=1&skip_spend=1")!, headers: [
+                    "Authorization": "Bearer \(token)",
+                    "anthropic-beta": "oauth-2025-04-20",
+                    "User-Agent": "claude-cli/\(Self.cliVersion) (external, cli)",
+                ])
+                return Fetched(windows: Self.windows(json), asOf: Date(), resetExpiries: Self.resetExpiries(json))
+            } catch FetchError.http(401) where attempt == 0 {
+                continue
+            }
+        }
+        throw FetchError.signedOut("Open Claude Code to refresh its sign-in.")
+    }
+
+    private func currentToken(reread: Bool) throws -> String {
+        if !reread, let cached = Self.token.value, (cached.expires ?? .distantFuture) > Date() {
+            return cached.value
+        }
         guard let oauth = credentials()?["claudeAiOauth"] as? [String: Any],
-              let token = oauth["accessToken"] as? String else { throw FetchError.notConfigured }
-        if let expires = number(oauth["expiresAt"]), Date(timeIntervalSince1970: expires / 1000) < Date() {
+              let token = oauth["accessToken"] as? String else {
+            Self.token.set(nil)
+            throw FetchError.notConfigured
+        }
+        let expires = number(oauth["expiresAt"]).map { Date(timeIntervalSince1970: $0 / 1000) }
+        if let expires, expires < Date() {
             throw FetchError.signedOut("Open Claude Code to refresh its sign-in.")
         }
-        // `cedar_ember=1` adds the usage-limit reset grants, which the server only
-        // reports to Claude Code's CLI, so this request uses its user agent.
-        let json = try await getJSON(URL(string: "https://api.anthropic.com/api/oauth/usage?cedar_ember=1&skip_spend=1")!, headers: [
-            "Authorization": "Bearer \(token)",
-            "anthropic-beta": "oauth-2025-04-20",
-            "User-Agent": "claude-cli/\(Self.cliVersion) (external, cli)",
-        ])
-        return Fetched(windows: Self.windows(json), asOf: Date(), resetExpiries: Self.resetExpiries(json))
+        Self.token.set((token, expires))
+        return token
     }
 
     /// One expiry date per unused reset. nil when the response has no grant status.
@@ -208,15 +247,22 @@ struct CodexFetcher: UsageFetcher {
 
     /// Codex grants free full resets that expire after 30 days. The usage
     /// response only has the count, so the dates need a second request.
+    private static let credits = Cached<(count: Int, expiries: [Date], checked: Date)>()
+
     private func resetExpiries(_ usage: [String: Any], headers: [String: String]) async throws -> [Date] {
-        let count = number((usage["rate_limit_reset_credits"] as? [String: Any])?["available_count"]) ?? 0
+        let count = Int(number((usage["rate_limit_reset_credits"] as? [String: Any])?["available_count"]) ?? 0)
         guard count > 0 else { return [] }
+        if let cached = Self.credits.value, cached.count == count, Date().timeIntervalSince(cached.checked) < 3600 {
+            return cached.expiries
+        }
         let json = try await getJSON(URL(string: "https://chatgpt.com/backend-api/wham/rate-limit-reset-credits")!, headers: headers)
         let credits = json["credits"] as? [[String: Any]] ?? []
-        return credits
+        let expiries = credits
             .filter { $0["status"] as? String == "available" && $0["is_supported_by_plan"] as? Bool != false }
             .compactMap { isoDate($0["expires_at"]) }
             .sorted()
+        Self.credits.set((count, expiries, Date()))
+        return expiries
     }
 
     /// The newest `rate_limits` entry in the last few days of session logs.
@@ -233,7 +279,7 @@ struct CodexFetcher: UsageFetcher {
         .sorted { modified($0) > modified($1) }
 
         for file in files.prefix(10) {
-            guard let text = try? String(contentsOf: file, encoding: .utf8) else { continue }
+            guard let text = tail(of: file) else { continue }
             for line in text.split(separator: "\n").reversed() where line.contains("\"rate_limits\"") {
                 guard let json = try? JSONSerialization.jsonObject(with: Data(line.utf8)) as? [String: Any],
                       let payload = json["payload"] as? [String: Any],
@@ -253,6 +299,17 @@ struct CodexFetcher: UsageFetcher {
         return nil
     }
 
+    /// The last 512 KB of a session log. The newest rate limits are near the
+    /// end, and the files can run to hundreds of megabytes.
+    private func tail(of url: URL) -> String? {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        guard let size = try? handle.seekToEnd() else { return nil }
+        try? handle.seek(toOffset: size > 512 * 1024 ? size - 512 * 1024 : 0)
+        guard let data = try? handle.readToEnd() else { return nil }
+        return String(decoding: data, as: UTF8.self)
+    }
+
     private func modified(_ url: URL) -> Date {
         (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
     }
@@ -265,14 +322,26 @@ struct CodexFetcher: UsageFetcher {
 struct CursorFetcher: UsageFetcher {
     let provider = Provider.cursor
 
+    private static let token = Cached<String>()
+
     func fetch() async throws -> Fetched {
-        guard let token = accessToken() else { throw FetchError.notConfigured }
-        guard let userID = userID(fromJWT: token) else { throw FetchError.signedOut("Sign in to Cursor again.") }
-        let json = try await getJSON(URL(string: "https://cursor.com/api/usage-summary")!, headers: [
-            "Cookie": "WorkosCursorSessionToken=\(userID)%3A%3A\(token)",
-            "Origin": "https://cursor.com",
-            "Referer": "https://cursor.com/dashboard",
-        ])
+        var json: [String: Any] = [:]
+        for attempt in 0..<2 {
+            let cached = attempt == 0 ? Self.token.value : nil
+            guard let token = cached ?? accessToken() else { throw FetchError.notConfigured }
+            Self.token.set(token)
+            guard let userID = userID(fromJWT: token) else { throw FetchError.signedOut("Sign in to Cursor again.") }
+            do {
+                json = try await getJSON(URL(string: "https://cursor.com/api/usage-summary")!, headers: [
+                    "Cookie": "WorkosCursorSessionToken=\(userID)%3A%3A\(token)",
+                    "Origin": "https://cursor.com",
+                    "Referer": "https://cursor.com/dashboard",
+                ])
+                break
+            } catch FetchError.http(let code) where (code == 401 || code == 403) && attempt == 0 {
+                Self.token.set(nil)
+            }
+        }
         guard let start = isoDate(json["billingCycleStart"]), let end = isoDate(json["billingCycleEnd"]) else {
             throw FetchError.unreadable
         }

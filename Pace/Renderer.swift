@@ -52,7 +52,7 @@ enum Renderer {
     private static func liveSnapshot() -> Snapshot {
         let store = UsageStore()
         var done = false
-        Task { await store.refresh(); done = true }
+        Task { await store.refresh(Set(Provider.allCases)); done = true }
         while !done { RunLoop.main.run(until: Date().addingTimeInterval(0.05)) }
         return store.snapshot
     }

@@ -20,8 +20,8 @@ struct UsageTimeline: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<UsageEntry>) -> Void) {
         let snapshot = SnapshotStore.load() ?? Snapshot()
         let now = Date()
-        let entries = (0..<12).map { UsageEntry(date: now.addingTimeInterval(Double($0) * 300), snapshot: snapshot) }
-        completion(Timeline(entries: entries, policy: .after(now.addingTimeInterval(3600))))
+        let entries = (0..<12).map { UsageEntry(date: now.addingTimeInterval(Double($0) * 600), snapshot: snapshot) }
+        completion(Timeline(entries: entries, policy: .after(now.addingTimeInterval(2 * 3600))))
     }
 }
 

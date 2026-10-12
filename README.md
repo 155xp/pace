@@ -6,7 +6,7 @@ Claude Code, Codex and Cursor usage in your Mac menu bar and as a desktop widget
 
 The tick on each bar is where your usage would be at an even pace. If your current rate would hit the limit before the reset, the row turns orange and says when you'll run out.
 
-Pace reads the sign-ins Claude Code, Codex and Cursor already keep on your Mac and asks the same endpoints those tools use for their own usage pages. It refreshes every minute, never changes their credentials, and only talks to Anthropic, OpenAI and Cursor. Right-click the menu bar item to turn providers on or off.
+Pace reads the sign-ins Claude Code, Codex and Cursor already keep on your Mac and asks the same endpoints those tools use for their own usage pages. It checks a tool a couple of minutes after you use it, checks everything every 15 minutes, and sleeps when your screen does. It never changes their credentials and only talks to Anthropic, OpenAI and Cursor. Right-click the menu bar item to turn providers on or off.
 
 ## Install
 
