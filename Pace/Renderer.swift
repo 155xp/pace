@@ -68,7 +68,8 @@ enum Renderer {
             ProviderUsage(provider: .codex, windows: [
                 UsageWindow(label: "Session", usedPercent: 100, resetsAt: now.addingTimeInterval(0.7 * h), length: 5 * h),
                 UsageWindow(label: "Week", usedPercent: 22, resetsAt: now.addingTimeInterval(5.5 * 24 * h), length: 168 * h),
-            ], updatedAt: now.addingTimeInterval(-40 * 60), error: "Couldn't refresh."),
+            ], updatedAt: now.addingTimeInterval(-40 * 60), error: "Couldn't refresh.",
+               resetExpiries: [now.addingTimeInterval(9.6 * 24 * h), now.addingTimeInterval(16.5 * 24 * h)]),
             ProviderUsage(provider: .cursor, windows: [
                 UsageWindow(label: "Auto + Composer", usedPercent: 12, resetsAt: now.addingTimeInterval(27 * 24 * h), length: 31 * 24 * h, shortLabel: "Auto"),
                 UsageWindow(label: "API", usedPercent: 3, resetsAt: now.addingTimeInterval(27 * 24 * h), length: 31 * 24 * h),

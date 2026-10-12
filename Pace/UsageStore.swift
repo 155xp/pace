@@ -62,14 +62,14 @@ final class UsageStore: ObservableObject {
         }
 
         let active = fetchers.filter { !hidden.contains($0.provider) }
-        let results = await withTaskGroup(of: (Provider, Result<(windows: [UsageWindow], asOf: Date), Error>).self) { group in
+        let results = await withTaskGroup(of: (Provider, Result<Fetched, Error>).self) { group in
             for fetcher in active {
                 group.addTask {
                     do { return (fetcher.provider, .success(try await fetcher.fetch())) }
                     catch { return (fetcher.provider, .failure(error)) }
                 }
             }
-            var results: [Provider: Result<(windows: [UsageWindow], asOf: Date), Error>] = [:]
+            var results: [Provider: Result<Fetched, Error>] = [:]
             for await (provider, result) in group { results[provider] = result }
             return results
         }
@@ -87,7 +87,8 @@ final class UsageStore: ObservableObject {
                     // Older numbers mean they came from a fallback (Codex's session logs).
                     let stale = Date().timeIntervalSince(fetched.asOf) > 10 * 60
                     providers.append(ProviderUsage(provider: provider, windows: fetched.windows, updatedAt: fetched.asOf,
-                                                   error: stale ? "Showing the last logged limits." : nil))
+                                                   error: stale ? "Showing the last logged limits." : nil,
+                                                   resetExpiries: fetched.resetExpiries ?? previous?.resetExpiries))
                 }
             case .failure(FetchError.notConfigured), nil:
                 continue

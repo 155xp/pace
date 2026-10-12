@@ -90,7 +90,7 @@ struct PaceWidgetView: View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(Array(snapshot.providers.enumerated()), id: \.element.id) { index, usage in
                 if index > 0 { Spacer(minLength: 12) }
-                ProviderSection(usage: usage, date: date)
+                ProviderSection(usage: usage, date: date, compact: true)
             }
             Spacer(minLength: 0)
         }

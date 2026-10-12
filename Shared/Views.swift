@@ -107,6 +107,8 @@ struct WindowRow: View {
 struct ProviderSection: View {
     let usage: ProviderUsage
     let date: Date
+    /// The large widget has no room for the resets row, so it puts the count in the header.
+    var compact = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -119,6 +121,10 @@ struct ProviderSection: View {
                     Text(note)
                         .font(.system(size: 11))
                         .foregroundStyle(.tertiary)
+                } else if compact, !resets.isEmpty {
+                    Text(resets.count == 1 ? "1 reset" : "\(resets.count) resets")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
                 }
             }
             if usage.windows.isEmpty, let error = usage.error {
@@ -130,7 +136,25 @@ struct ProviderSection: View {
             ForEach(usage.windows.map { $0.at(date) }) { window in
                 WindowRow(window: window, date: date)
             }
+            if !compact, !resets.isEmpty {
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Full resets")
+                            .font(.system(size: 12, weight: .medium))
+                        Spacer()
+                        Text("\(resets.count)")
+                            .font(.system(size: 12, weight: .semibold).monospacedDigit())
+                    }
+                    Text((resets.count == 1 ? "Expires " : "Expire ") + resets.map { Format.moment($0, from: date) }.joined(separator: ", "))
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
+    }
+
+    private var resets: [Date] {
+        (usage.resetExpiries ?? []).filter { $0 > date }.sorted()
     }
 
     /// Only shown when refreshing has been failing long enough to matter.

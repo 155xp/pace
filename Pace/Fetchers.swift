@@ -18,10 +18,17 @@ enum FetchError: LocalizedError {
     }
 }
 
+struct Fetched {
+    var windows: [UsageWindow]
+    /// The time the numbers describe.
+    var asOf: Date
+    /// Expiry dates of unused limit resets. nil when unknown.
+    var resetExpiries: [Date]? = nil
+}
+
 protocol UsageFetcher: Sendable {
     var provider: Provider { get }
-    /// Returns the windows and the time they describe.
-    func fetch() async throws -> (windows: [UsageWindow], asOf: Date)
+    func fetch() async throws -> Fetched
 }
 
 private let home = FileManager.default.homeDirectoryForCurrentUser
@@ -81,7 +88,7 @@ private func windowLabel(_ seconds: TimeInterval) -> String {
 struct ClaudeFetcher: UsageFetcher {
     let provider = Provider.claude
 
-    func fetch() async throws -> (windows: [UsageWindow], asOf: Date) {
+    func fetch() async throws -> Fetched {
         guard let oauth = credentials()?["claudeAiOauth"] as? [String: Any],
               let token = oauth["accessToken"] as? String else { throw FetchError.notConfigured }
         if let expires = number(oauth["expiresAt"]), Date(timeIntervalSince1970: expires / 1000) < Date() {
@@ -91,7 +98,7 @@ struct ClaudeFetcher: UsageFetcher {
             "Authorization": "Bearer \(token)",
             "anthropic-beta": "oauth-2025-04-20",
         ])
-        return (Self.windows(json), Date())
+        return Fetched(windows: Self.windows(json), asOf: Date())
     }
 
     static func windows(_ json: [String: Any]) -> [UsageWindow] {
@@ -146,7 +153,7 @@ struct CodexFetcher: UsageFetcher {
             ?? home.appendingPathComponent(".codex")
     }
 
-    func fetch() async throws -> (windows: [UsageWindow], asOf: Date) {
+    func fetch() async throws -> Fetched {
         guard let auth = readJSON(codexHome.appendingPathComponent("auth.json")),
               let tokens = auth["tokens"] as? [String: Any],
               let token = tokens["access_token"] as? String else { throw FetchError.notConfigured }
@@ -162,15 +169,29 @@ struct CodexFetcher: UsageFetcher {
                 let reset = number(w["reset_at"]).map { Date(timeIntervalSince1970: $0) }
                 return UsageWindow(label: windowLabel(length), usedPercent: used, resetsAt: reset, length: length)
             }
-            return (windows.sorted { $0.length < $1.length }, Date())
+            return Fetched(windows: windows.sorted { $0.length < $1.length }, asOf: Date(),
+                           resetExpiries: try? await resetExpiries(json, headers: headers))
         } catch {
             if let logged = loggedLimits() { return logged }
             throw error
         }
     }
 
+    /// Codex grants free full resets that expire after 30 days. The usage
+    /// response only has the count, so the dates need a second request.
+    private func resetExpiries(_ usage: [String: Any], headers: [String: String]) async throws -> [Date] {
+        let count = number((usage["rate_limit_reset_credits"] as? [String: Any])?["available_count"]) ?? 0
+        guard count > 0 else { return [] }
+        let json = try await getJSON(URL(string: "https://chatgpt.com/backend-api/wham/rate-limit-reset-credits")!, headers: headers)
+        let credits = json["credits"] as? [[String: Any]] ?? []
+        return credits
+            .filter { $0["status"] as? String == "available" && $0["is_supported_by_plan"] as? Bool != false }
+            .compactMap { isoDate($0["expires_at"]) }
+            .sorted()
+    }
+
     /// The newest `rate_limits` entry in the last few days of session logs.
-    private func loggedLimits() -> (windows: [UsageWindow], asOf: Date)? {
+    private func loggedLimits() -> Fetched? {
         let sessions = codexHome.appendingPathComponent("sessions")
         let calendar = Calendar(identifier: .gregorian)
         let files = (0..<4).flatMap { daysAgo -> [URL] in
@@ -197,7 +218,7 @@ struct CodexFetcher: UsageFetcher {
                         ?? number(w["resets_in_seconds"]).map { asOf.addingTimeInterval($0) }
                     return UsageWindow(label: windowLabel(minutes * 60), usedPercent: used, resetsAt: reset, length: minutes * 60)
                 }
-                if !windows.isEmpty { return (windows.sorted { $0.length < $1.length }, asOf) }
+                if !windows.isEmpty { return Fetched(windows: windows.sorted { $0.length < $1.length }, asOf: asOf) }
             }
         }
         return nil
@@ -215,7 +236,7 @@ struct CodexFetcher: UsageFetcher {
 struct CursorFetcher: UsageFetcher {
     let provider = Provider.cursor
 
-    func fetch() async throws -> (windows: [UsageWindow], asOf: Date) {
+    func fetch() async throws -> Fetched {
         guard let token = accessToken() else { throw FetchError.notConfigured }
         guard let userID = userID(fromJWT: token) else { throw FetchError.signedOut("Sign in to Cursor again.") }
         let json = try await getJSON(URL(string: "https://cursor.com/api/usage-summary")!, headers: [
@@ -240,7 +261,7 @@ struct CursorFetcher: UsageFetcher {
             windows.append(UsageWindow(label: "Month", usedPercent: spent / limit * 100, resetsAt: end, length: length))
         }
         guard !windows.isEmpty else { throw FetchError.unreadable }
-        return (windows, Date())
+        return Fetched(windows: windows, asOf: Date())
     }
 
     private func accessToken() -> String? {

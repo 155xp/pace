@@ -34,6 +34,8 @@ struct ProviderUsage: Codable, Hashable, Identifiable {
     var updatedAt: Date
     /// Set when the latest refresh failed; the windows are from an earlier one.
     var error: String?
+    /// Expiry dates of unused limit resets you can spend (Codex grants these).
+    var resetExpiries: [Date]? = nil
 }
 
 struct Snapshot: Codable, Hashable {
