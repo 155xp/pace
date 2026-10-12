@@ -170,14 +170,14 @@ struct ResetTile: View {
 
     var body: some View {
         let left = expiry.timeIntervalSince(date)
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(spacing: 1) {
             Text(expiry.formatted(.dateTime.month(.abbreviated).day()))
                 .font(.system(size: 12, weight: .semibold))
             Text(left < 24 * 3600 ? Format.duration(left) + " left" : "\(Int((left / 86400).rounded()))d left")
                 .font(.system(size: 10.5))
                 .foregroundStyle(left < 48 * 3600 ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 9)
         .padding(.vertical, 7)
         .background(.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
