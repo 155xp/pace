@@ -94,12 +94,41 @@ struct ClaudeFetcher: UsageFetcher {
         if let expires = number(oauth["expiresAt"]), Date(timeIntervalSince1970: expires / 1000) < Date() {
             throw FetchError.signedOut("Open Claude Code to refresh its sign-in.")
         }
-        let json = try await getJSON(URL(string: "https://api.anthropic.com/api/oauth/usage")!, headers: [
+        // `cedar_ember=1` adds the usage-limit reset grants, which the server only
+        // reports to Claude Code's CLI, so this request uses its user agent.
+        let json = try await getJSON(URL(string: "https://api.anthropic.com/api/oauth/usage?cedar_ember=1&skip_spend=1")!, headers: [
             "Authorization": "Bearer \(token)",
             "anthropic-beta": "oauth-2025-04-20",
+            "User-Agent": "claude-cli/\(Self.cliVersion) (external, cli)",
         ])
-        return Fetched(windows: Self.windows(json), asOf: Date())
+        return Fetched(windows: Self.windows(json), asOf: Date(), resetExpiries: Self.resetExpiries(json))
     }
+
+    /// One expiry date per unused reset. nil when the response has no grant status.
+    static func resetExpiries(_ json: [String: Any]) -> [Date]? {
+        guard let status = json["cedar_ember"] as? [String: Any] else { return nil }
+        let grants = status["grants"] as? [[String: Any]] ?? []
+        return grants.flatMap { grant -> [Date] in
+            guard grant["paused"] as? Bool != true,
+                  let left = number(grant["resets_left"]), left > 0,
+                  let end = isoDate(grant["ends_at"]) else { return [] }
+            return Array(repeating: end, count: Int(left))
+        }
+        .sorted()
+    }
+
+    /// The installed Claude Code version, read from where Homebrew or the native
+    /// installer links the `claude` binary.
+    private static let cliVersion: String = {
+        let links = ["/opt/homebrew/bin/claude", "/usr/local/bin/claude", home.appendingPathComponent(".local/bin/claude").path]
+        for link in links {
+            guard let target = try? FileManager.default.destinationOfSymbolicLink(atPath: link) else { continue }
+            if let match = target.range(of: #"\d+\.\d+\.\d+"#, options: .regularExpression) {
+                return String(target[match])
+            }
+        }
+        return "2.1.287"
+    }()
 
     static func windows(_ json: [String: Any]) -> [UsageWindow] {
         func window(_ key: String, _ label: String, _ length: TimeInterval) -> UsageWindow? {

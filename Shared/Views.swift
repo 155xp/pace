@@ -137,17 +137,14 @@ struct ProviderSection: View {
                 WindowRow(window: window, date: date)
             }
             if !compact, !resets.isEmpty {
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text("Full resets")
-                            .font(.system(size: 12, weight: .medium))
-                        Spacer()
-                        Text("\(resets.count)")
-                            .font(.system(size: 12, weight: .semibold).monospacedDigit())
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Full resets")
+                        .font(.system(size: 12, weight: .medium))
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3), spacing: 6) {
+                        ForEach(Array(resets.enumerated()), id: \.offset) { _, expiry in
+                            ResetTile(expiry: expiry, date: date)
+                        }
                     }
-                    Text((resets.count == 1 ? "Expires " : "Expire ") + resets.map { Format.moment($0, from: date) }.joined(separator: ", "))
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -163,6 +160,27 @@ struct ProviderSection: View {
         let age = date.timeIntervalSince(usage.updatedAt)
         guard age > 10 * 60 else { return nil }
         return "as of " + Format.duration(age) + " ago"
+    }
+}
+
+/// One unused reset: when it expires and how long that leaves.
+struct ResetTile: View {
+    let expiry: Date
+    let date: Date
+
+    var body: some View {
+        let left = expiry.timeIntervalSince(date)
+        VStack(alignment: .leading, spacing: 1) {
+            Text(expiry.formatted(.dateTime.month(.abbreviated).day()))
+                .font(.system(size: 12, weight: .semibold))
+            Text(left < 24 * 3600 ? Format.duration(left) + " left" : "\(Int((left / 86400).rounded()))d left")
+                .font(.system(size: 10.5))
+                .foregroundStyle(left < 48 * 3600 ? AnyShapeStyle(.orange) : AnyShapeStyle(.secondary))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 7)
+        .background(.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 }
 
