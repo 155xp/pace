@@ -227,15 +227,20 @@ struct CursorFetcher: UsageFetcher {
             throw FetchError.unreadable
         }
         let plan = (json["individualUsage"] as? [String: Any])?["plan"] as? [String: Any] ?? [:]
-        let used: Double
-        if let total = number(plan["totalPercentUsed"]) {
-            used = total
-        } else if let spent = number(plan["used"]), let limit = number(plan["limit"]), limit > 0 {
-            used = spent / limit * 100
-        } else {
-            throw FetchError.unreadable
+        let length = end.timeIntervalSince(start)
+        // Cursor's own models (Auto, Composer) and named outside models draw from separate pools.
+        var windows: [UsageWindow] = []
+        if let auto = number(plan["autoPercentUsed"]) {
+            windows.append(UsageWindow(label: "Auto + Composer", usedPercent: auto, resetsAt: end, length: length, shortLabel: "Auto"))
         }
-        return ([UsageWindow(label: "Month", usedPercent: used, resetsAt: end, length: end.timeIntervalSince(start))], Date())
+        if let api = number(plan["apiPercentUsed"]) {
+            windows.append(UsageWindow(label: "API", usedPercent: api, resetsAt: end, length: length))
+        }
+        if windows.isEmpty, let spent = number(plan["used"]), let limit = number(plan["limit"]), limit > 0 {
+            windows.append(UsageWindow(label: "Month", usedPercent: spent / limit * 100, resetsAt: end, length: length))
+        }
+        guard !windows.isEmpty else { throw FetchError.unreadable }
+        return (windows, Date())
     }
 
     private func accessToken() -> String? {

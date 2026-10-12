@@ -66,10 +66,10 @@ struct PaceWidgetView: View {
                             .padding(.top, 4)
                         Group {
                             if let resetsAt = window.resetsAt {
-                                Text(window.label + " · " + Format.shortMoment(resetsAt, from: date))
+                                Text((window.shortLabel ?? window.label) + " · " + Format.shortMoment(resetsAt, from: date))
                                     .foregroundStyle(.secondary)
                             } else {
-                                Text(window.label).foregroundStyle(.secondary)
+                                Text(window.shortLabel ?? window.label).foregroundStyle(.secondary)
                             }
                             if let text = Format.pace(pace, from: date).map(shortPace) {
                                 Text(text)

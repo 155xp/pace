@@ -25,7 +25,7 @@ enum Renderer {
             write(MenuBarLabel(snapshot: snapshot, date: now, colored: true, ink: ink)
                 .padding(.horizontal, 10).frame(height: 24).background(barBackground)
                 .environment(\.colorScheme, scheme), "menubar-\(suffix)", dir)
-            write(PopoverContent(snapshot: snapshot, loaded: true, date: now)
+            write(PopoverContent(snapshot: snapshot, empty: "", date: now)
                 .background(dark ? Color(white: 0.17) : Color(white: 0.97))
                 .environment(\.colorScheme, scheme), "popover-\(suffix)", dir)
             for (size, name, width, height) in [(WidgetSize.small, "small", 170.0, 170.0), (.medium, "medium", 364, 170), (.large, "large", 364, 382)] {
@@ -70,7 +70,8 @@ enum Renderer {
                 UsageWindow(label: "Week", usedPercent: 22, resetsAt: now.addingTimeInterval(5.5 * 24 * h), length: 168 * h),
             ], updatedAt: now.addingTimeInterval(-40 * 60), error: "Couldn't refresh."),
             ProviderUsage(provider: .cursor, windows: [
-                UsageWindow(label: "Month", usedPercent: 12, resetsAt: now.addingTimeInterval(27 * 24 * h), length: 31 * 24 * h),
+                UsageWindow(label: "Auto + Composer", usedPercent: 12, resetsAt: now.addingTimeInterval(27 * 24 * h), length: 31 * 24 * h, shortLabel: "Auto"),
+                UsageWindow(label: "API", usedPercent: 3, resetsAt: now.addingTimeInterval(27 * 24 * h), length: 31 * 24 * h),
             ], updatedAt: now),
         ])
     }

@@ -22,6 +22,8 @@ struct UsageWindow: Codable, Hashable, Identifiable {
     /// nil when the window isn't running, e.g. no active Claude session.
     var resetsAt: Date?
     var length: TimeInterval
+    /// Shorter label for tight spaces like the medium widget.
+    var shortLabel: String? = nil
 }
 
 struct ProviderUsage: Codable, Hashable, Identifiable {

@@ -99,6 +99,17 @@ final class StatusItemController: NSObject {
 
     private func showMenu() {
         let menu = NSMenu()
+        // Providers that aren't set up on this Mac are left out, unless they were turned off.
+        let listed = Provider.allCases.filter { provider in
+            store.hidden.contains(provider) || store.snapshot.providers.contains { $0.provider == provider }
+        }
+        for provider in listed {
+            let item = menu.addItem(withTitle: provider.name, action: #selector(toggleProvider(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = provider.rawValue
+            item.state = store.hidden.contains(provider) ? .off : .on
+        }
+        if !listed.isEmpty { menu.addItem(.separator()) }
         menu.addItem(withTitle: "Refresh", action: #selector(refresh), keyEquivalent: "r").target = self
         let login = menu.addItem(withTitle: "Open at Login", action: #selector(toggleLogin), keyEquivalent: "")
         login.target = self
@@ -112,6 +123,11 @@ final class StatusItemController: NSObject {
 
     @objc private func refresh() {
         Task { await store.refresh() }
+    }
+
+    @objc private func toggleProvider(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String, let provider = Provider(rawValue: raw) else { return }
+        store.setHidden(provider, !store.hidden.contains(provider))
     }
 
     @objc private func toggleLogin() {
@@ -152,22 +168,28 @@ final class StatusItemController: NSObject {
 struct PopoverView: View {
     @ObservedObject var store: UsageStore
 
+    private var emptyMessage: String {
+        if store.lastRefresh == nil { return "Loading…" }
+        if !store.hidden.isEmpty { return "Everything is turned off. Right-click the menu bar item to turn providers back on." }
+        return "No Claude Code, Codex or Cursor sign-in found on this Mac."
+    }
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 30)) { context in
-            PopoverContent(snapshot: store.snapshot, loaded: store.lastRefresh != nil, date: context.date)
+            PopoverContent(snapshot: store.snapshot, empty: emptyMessage, date: context.date)
         }
     }
 }
 
 struct PopoverContent: View {
     let snapshot: Snapshot
-    let loaded: Bool
+    let empty: String
     let date: Date
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             if snapshot.providers.isEmpty {
-                Text(loaded ? "No Claude Code, Codex or Cursor sign-in found on this Mac." : "Loading…")
+                Text(empty)
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
